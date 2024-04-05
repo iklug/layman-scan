@@ -6,11 +6,15 @@ import Button from "./components/Button";
 import Results from "./pages/Results";
 import Error from "./components/Error";
 import DotLoader from 'react-spinners/DotLoader';
+import SubmitScan from "./components/SubmitScan";
+import ResultContainer from "./components/ResultContainer";
+import DragBox from "./components/DragBox";
 
 function App() {
 
   const [result, setResult] = useState(null);
   const [selectedFile, setSelectedFile] = useState('');
+  const [viewFileInput, setViewFileInput] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -59,13 +63,15 @@ function App() {
   return (
     <>
       <Page>
-        {result && <Results handleClick={()=>setResult(null)} result={result}/>}
+        {result && 
+          <ResultContainer>
+            <Results handleClick={()=>setResult(null)} result={result}/>
+            <DragBox/>
+          </ResultContainer>}
         <Title/>
-        <FileDrop handleFileUpload={handleFileUpload} />
-        <Button handleClick={submitFile} title={'Start Scan'}/>
-        <Error errorText={error}/>
-        {/* {loading && <DotLoader color={"#5C80BC"} cssOverride={override}  />} */}
-        {loading && <div className="fixed mt-48">Scanning file.. {`(this can take a moment)`}</div>}
+          <SubmitScan handleFileUpload={handleFileUpload} submitFile={submitFile} />
+          <Error errorText={error}/>
+          {loading && <div className="fixed mt-48">Scanning file.. {`(this can take a moment)`}</div>}
       </Page>
     </>
   );
