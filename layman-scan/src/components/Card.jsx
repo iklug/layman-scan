@@ -1,8 +1,26 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddCard from "./AddCard";
+import {dropTargetForElements, draggable} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 
-const Card = ({ info }) => {
-  console.log(info);
+const Card = ({ info, location }) => {
+
+const [dragging, setDragging] = useState(false);
+const ref = useRef(null);
+
+
+useEffect(()=> {
+    const element = ref.current;
+    if(!element){
+        throw new Error('I am throwing an error');
+    }
+    return draggable({
+        element: element,
+        getInitialData: () => ({location, info}),
+        onDragStart: () => setDragging(true),
+        onDrop: () => setDragging(false),
+    });
+}, [location]);
+
   const splitInfo = info.split(":");
   const noStars = splitInfo[0]
     .split("")
@@ -25,16 +43,17 @@ const Card = ({ info }) => {
   }
 
   return (
-    <div className="flex flex-col justify-center flex-grow py-2 items-stretch">
+    <div className={`flex flex-col justify-center h-48 py-2`}>
       {/* <div className="font-bold bg-gray-50 px-4 rounded-lg text-gray-700">{noStars}:</div>
             <div className=" w-56 flex-grow">{splitInfo[1]}</div>
             <div className=" w-56 flex-grow"></div> */}
       <a
         href="#"
         onClick={handleClick}
-        className={`max-w-sm p-6 flex-grow bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col ${
+        className={`${dragging && 'opacity-30'} p-6 flex-grow bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex flex-col ${
           add ? "bg-blue-200 hover:bg-blue-300" : ""
         } transition-colors duration-100`}
+        ref={ref}
       >
         <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
           {noStars}

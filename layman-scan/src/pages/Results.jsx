@@ -7,10 +7,11 @@ const Results = ({ handleClick, result }) => {
     return (
 
 
-      <div className="h-4/5 w-1/2  lg:w-1/2 bg-slate-100 flex flex-col overflow-scroll gap-1 relative">
-        {result.map((item, index) => (
-            <Card info={item} key={index}></Card>
-            ))}
+      <div className="h-full w-1/2  lg:w-1/2 bg-slate-100 flex flex-col overflow-scroll relative pr-2">
+        {result.map((item, index) => 
+            
+            item.location === 'bank' ? <Card info={item.word} key={item.word} location={item.location}></Card> : null
+            )}
       </div>
     
   );

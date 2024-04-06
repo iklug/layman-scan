@@ -1,4 +1,4 @@
-import { useState, CSSProperties } from "react";
+import { useState, useEffect, useRef } from "react";
 import Page from "./pages/Page";
 import Title from "./components/Title";
 import FileDrop from "./components/FileDrop";
@@ -9,22 +9,58 @@ import DotLoader from 'react-spinners/DotLoader';
 import SubmitScan from "./components/SubmitScan";
 import ResultContainer from "./components/ResultContainer";
 import DragBox from "./components/DragBox";
+import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 
 function App() {
 
   const [result, setResult] = useState(null);
+  const [collection, setCollection] = useState([]);
   const [selectedFile, setSelectedFile] = useState('');
   const [viewFileInput, setViewFileInput] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  console.log('the results',result);
+  useEffect(()=> {
+
+    return monitorForElements({
+      onDrop({source, location}) {
+        const destination = location.current.dropTargets[0];
+        if(!destination){
+          return;
+        }
+        console.log('destination', destination);
+        const destinationLocation = destination.data.location;
+        
+        const sourceLocation = source.data.location;
+        const sourceDefinition = source.data.info;
+
+
+
+        // const updatedLocations = result.reduce(((acc, item) => {
+        //   if(item.word !== sourceDefinition){
+        //     acc.push(item);
+        //   } 
+        //   return acc;
+        // }
+        // ),[])
+
+        const updatedLocations = result.filter(item => item.word !== sourceDefinition);
+        console.log(destinationLocation, sourceLocation, sourceDefinition, updatedLocations);
+        // const word = result.find(item=> item.word === sourceDefinition );
+        // const restOfWords = result.filter(item => item.word !== )
+        setResult(updatedLocations);
+        setCollection(prev => [{word: sourceDefinition, location: destinationLocation}, ...prev]);
+      }
+    })
+    
+
+  }, [result, collection])
 
   const handleFileUpload = (e) => {
     setSelectedFile(e.target.files[0])
-    console.log('handleFileUpload running');
   }
 
-  console.log('this is the uploaded file',selectedFile);
 
   const submitFile = async() => {
     if(!selectedFile){
@@ -44,20 +80,14 @@ function App() {
         throw new Error('that did not work though @ submitFile');
       }
       const data = await request.json();
-      console.log('data received', data);
       const splitData = data.split('@');
-
-      setResult(splitData.slice(1)
+      const reformatAgain = splitData.slice(1).map(item => { return {word: item, location:'bank'}});
+      setResult(reformatAgain
       );
     } catch (error) {
       console.error(error);
       setError('there was an error @ submitFile, bottom part');
     }
-  }
-
-  const override = {
-    display: 'absolute',
-    top: '12px',
   }
 
   return (
@@ -66,7 +96,7 @@ function App() {
         {result && 
           <ResultContainer>
             <Results handleClick={()=>setResult(null)} result={result}/>
-            <DragBox/>
+            <DragBox location={'collection'} cards={collection}/>
           </ResultContainer>}
         <Title/>
           <SubmitScan handleFileUpload={handleFileUpload} submitFile={submitFile} />
