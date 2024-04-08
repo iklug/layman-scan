@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Page from "./pages/Page";
 import Title from "./components/Title";
-import FileDrop from "./components/FileDrop";
-import Button from "./components/Button";
 import Results from "./pages/Results";
 import Error from "./components/Error";
 import DotLoader from 'react-spinners/DotLoader';
@@ -10,17 +8,32 @@ import SubmitScan from "./components/SubmitScan";
 import ResultContainer from "./components/ResultContainer";
 import DragBox from "./components/DragBox";
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import CollectionContainer from "./pages/CollectionContainer";
+import CardSmallCont from "./components/CardSmallCont";
+import CardFull from "./components/CardFull";
 
 function App() {
 
   const [result, setResult] = useState(null);
   const [collection, setCollection] = useState([]);
+  const [fullCollection, setFullCollection] = useState([]);
   const [selectedFile, setSelectedFile] = useState('');
   const [viewFileInput, setViewFileInput] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [selectedWord, setSelectedWord] = useState('');
+  const [viewCollection, setViewCollection] = useState(false);
+  
 
-  console.log('the results',result);
+  useEffect(()=>{
+    const fullCollection = localStorage.getItem('collection');
+
+    if(fullCollection){
+      setFullCollection(JSON.parse(fullCollection));
+    }
+
+    }, []);
+
   useEffect(()=> {
 
     return monitorForElements({
@@ -34,23 +47,13 @@ function App() {
         
         const sourceLocation = source.data.location;
         const sourceDefinition = source.data.info;
-
-
-
-        // const updatedLocations = result.reduce(((acc, item) => {
-        //   if(item.word !== sourceDefinition){
-        //     acc.push(item);
-        //   } 
-        //   return acc;
-        // }
-        // ),[])
-
         const updatedLocations = result.filter(item => item.word !== sourceDefinition);
         console.log(destinationLocation, sourceLocation, sourceDefinition, updatedLocations);
-        // const word = result.find(item=> item.word === sourceDefinition );
-        // const restOfWords = result.filter(item => item.word !== )
+        const draggedItem = {word: sourceDefinition, location: destinationLocation};
         setResult(updatedLocations);
-        setCollection(prev => [{word: sourceDefinition, location: destinationLocation}, ...prev]);
+        setCollection(prev => [draggedItem, ...prev]);
+        setFullCollection(prev => [draggedItem, ...prev]);
+        localStorage.setItem('collection', JSON.stringify([draggedItem, ...fullCollection]));
       }
     })
     
@@ -61,6 +64,12 @@ function App() {
     setSelectedFile(e.target.files[0])
   }
 
+  const deleteWord = (word) => {
+    const newCollection = fullCollection.filter(item => item.word !== word);
+    setFullCollection(newCollection);
+    localStorage.setItem('collection', JSON.stringify(newCollection));
+    setSelectedWord('');
+  }
 
   const submitFile = async() => {
     if(!selectedFile){
@@ -84,6 +93,7 @@ function App() {
       const reformatAgain = splitData.slice(1).map(item => { return {word: item, location:'bank'}});
       setResult(reformatAgain
       );
+      setLoading(false);
     } catch (error) {
       console.error(error);
       setError('there was an error @ submitFile, bottom part');
@@ -94,12 +104,18 @@ function App() {
     <>
       <Page>
         {result && 
-          <ResultContainer>
+          <ResultContainer close={()=>setResult(null)} viewCollection={()=>setViewCollection(true)}>
             <Results handleClick={()=>setResult(null)} result={result}/>
             <DragBox location={'collection'} cards={collection}/>
           </ResultContainer>}
+          {/* <CollectionContainer/> */}
+         {viewCollection && <CollectionContainer>
+            <CardSmallCont handleClick={(word)=>setSelectedWord(word)} fullCollection={fullCollection} selected={selectedWord} close={()=>setViewCollection(false)} />
+            
+            {selectedWord && <CardFull info={selectedWord} deleteWord={deleteWord} />}
+          </CollectionContainer>}
         <Title/>
-          <SubmitScan handleFileUpload={handleFileUpload} submitFile={submitFile} />
+          <SubmitScan handleFileUpload={handleFileUpload} submitFile={submitFile} viewCollection={()=>setViewCollection(true)} />
           <Error errorText={error}/>
           {loading && <div className="fixed mt-48">Scanning file.. {`(this can take a moment)`}</div>}
       </Page>

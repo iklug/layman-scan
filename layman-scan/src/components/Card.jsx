@@ -43,10 +43,7 @@ useEffect(()=> {
   }
 
   return (
-    <div className={`flex flex-col justify-center h-48 py-2`}>
-      {/* <div className="font-bold bg-gray-50 px-4 rounded-lg text-gray-700">{noStars}:</div>
-            <div className=" w-56 flex-grow">{splitInfo[1]}</div>
-            <div className=" w-56 flex-grow"></div> */}
+    <div className={`flex flex-col justify-center py-2`}>
       <a
         href="#"
         onClick={handleClick}
