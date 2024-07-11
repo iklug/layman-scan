@@ -5,12 +5,11 @@ LaymanScan
 ## Description
 
 The function of LaymanScan is relatively simple: upload a photo of medical paperwork (though it could be any words) and with the help of Google Gemini, cards will be created with simple definitions of all of the complex words on the page.
-<img width="850" alt="Screenshot 2024-07-11 at 11 48 25 AM" src="https://github.com/user-attachments/assets/ae87eea3-3989-4bf9-aa92-f7b60cbbb5ad">
 
 
-![Screenshot 2024-05-15 at 2 18 33 PM](https://github.com/user-attachments/assets/1ae006b2-dcee-4948-bb93-f98741661074)
+<img width="497" alt="Screenshot 2024-07-11 at 12 08 51 PM" src="https://github.com/user-attachments/assets/ad287b8b-a0cf-44cf-8156-97b5cf26dabf">
+
 
 These cards can then be added to a 'deck' in order to be reviewed and practice, if you wish. 
 
-
-![Screenshot 2024-05-15 at 2 19 35 PM](https://github.com/user-attachments/assets/64d37ceb-ef9c-40c0-b84a-e42ffb5d9125)
+<img width="700" alt="Screenshot 2024-07-11 at 12 10 36 PM" src="https://github.com/user-attachments/assets/dc1baa19-7a8b-4084-80c0-e96a05ecb46d">
