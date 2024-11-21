@@ -15,6 +15,7 @@ const handleFileSubmission = async (dispatch, file) => {
 
     const request = await fetch("https://megabackend.fly.dev/laymanscan", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
