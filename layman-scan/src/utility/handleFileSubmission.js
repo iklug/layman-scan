@@ -13,7 +13,7 @@ const handleFileSubmission = async (dispatch, file) => {
     dispatch(changeNav("loading"));
     const transcription = await transcribeImage(file);
 
-    const request = await fetch("http://localhost:8080/laymanscan", {
+    const request = await fetch("https://megabackend.fly.dev/laymanscan", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
