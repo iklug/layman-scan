@@ -2,18 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 ::-webkit-file-upload-button {
-    border: none;
-    background: #575757;
-    color: #e9e9e9;
-    font-weight: 500;
-    height: 40px;
-    margin-right: 12px;
-    padding: 0px 12px;
+  border: none;
+  background: #575757;
+  color: #e9e9e9;
+  font-weight: 500;
+  height: 40px;
+  margin-right: 12px;
+  padding: 0px 12px;
 }
 :hover::-webkit-file-upload-button {
-    background-color: #3b3b3b;
+  background-color: #3b3b3b;
 }
 
-
-  
+::-webkit-scrollbar {
+  width: 10px;
+}

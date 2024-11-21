@@ -1,20 +1,39 @@
-import { useState } from "react";
-import Button from "../components/Button";
-import Card from "../components/Card";
+import ResultCards from "../components/ResultCard";
+import dummyData from "../data";
+import PrimaryButton from "../components/PrimaryButton";
+import SecondaryButton from "../components/SecondaryButton";
+import ResultsContainer from "../components/ResultsContainer";
+import { changeNav } from "../redux/navSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectResponse } from "../redux/responseSlice";
+export default function Results() {
+  const dispatch = useDispatch();
+  const responseData = useSelector(selectResponse);
 
-const Results = ({ handleClick, result }) => {
-  
-    return (
+  const renderCards = responseData
+    ? responseData.map((x, index) => (
+        <ResultCards
+          word={x.word}
+          definition={x.definition}
+          key={`${x.word}-${index}`}
+          id={`${x.word}-${index}`}
+        />
+      ))
+    : null;
 
-
-      <div className="h-full w-1/2  lg:w-1/2 bg-slate-100 flex flex-col overflow-scroll relative pr-2">
-        {result.map((item, index) => 
-            
-            item.location === 'bank' ? <Card info={item.word} key={item.word} location={item.location}></Card> : null
-            )}
+  return (
+    <ResultsContainer>
+      {renderCards}
+      <div id="buttonContainer" className="flex pt-4 gap-2">
+        <PrimaryButton
+          text="New Scan"
+          action={() => dispatch(changeNav("scan"))}
+        />
+        <SecondaryButton
+          text="View Collection"
+          action={() => dispatch(changeNav("collection"))}
+        />
       </div>
-    
+    </ResultsContainer>
   );
-};
-
-export default Results;
+}
